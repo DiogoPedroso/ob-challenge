@@ -5,7 +5,7 @@
     //Require Mongoose
     const mongoose = require('mongoose');
     //Object decoupling
-    const {Orderbook, createOrderbook, rebalanceOrderbook} = require('../models/orderbook');
+    const {Orderbook, createOrderbook, updateOrderbook} = require('../models/orderbook');
     //Require lodash
     const _ = require('lodash');
     const csv = require('csv-express');
@@ -22,7 +22,6 @@
     //Function that handles POST request on /api/orderbooks
     router.post('/', async(req,res) => {
         const orderbookObject = await createOrderbook(req.body);
-
         try{
             const orderbook = await  new Orderbook(orderbookObject);
             await orderbook.save();
@@ -34,17 +33,20 @@
     
     //Update OrderbookBook
 	router.put('/:id', async (req, res) => {
-        /*const orderbook = await Orderbook.findByIdAndUpdate(req.params.id, { 
-            fundAmount: req.body.fundAmount, 
-            coin_pairs: req.body.coin_pairs
-        }, {new : true});*/
-        //If not send 404
         const orderbook = await Orderbook.findById(req.params.id);
         if(!orderbook) return res.status(404).send(`The orderbook with the given ID ${req.params.id} was not found`);
 
-        await rebalanceOrderbook(orderbook, req.body.index.data.assets);
+        let portfolio_changes = await updateOrderbook(orderbook, req.body.index.data.assets);
 
-        res.send(orderbook);
+        portfolio_changes = _.map(portfolio_changes, function (c) {
+            return _.omit(c, ['action coin_price']);
+        });
+
+        jsonexport(portfolio_changes,{rename: ['Name', 'Symbol', 'Weight %', '€ Rebalance Amount', 'Current Price - Index',  'Order Required'] }, function(err, csv){
+            if(err) return console.log(err);
+            res.set('Content-Type', 'text/csv');
+            res.send(csv);
+        });
         }
     );
 
