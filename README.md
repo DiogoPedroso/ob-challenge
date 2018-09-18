@@ -1,4 +1,4 @@
-TODO: Finish
+Description: This is my (Diogo Pedroso) proposed solution for the issued code challenge.
 
 This project requires an installation of Node js to run and a MongoDB installation on a local machine.
 
@@ -8,8 +8,7 @@ npm -i
 To start the project, run the following command:
 node index.js
 
-Currently missing: 
-- Test cases;
-- Full code documentation;
-- Validation;
-- REST API Documentation.
+To run the test suite use the following command:
+npm run test
+
+For the testing of the API it is recommended to use POSTMAN API (https://www.getpostman.com/), which is what was used during the development of the API.

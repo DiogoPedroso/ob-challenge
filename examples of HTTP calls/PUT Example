@@ -1,13 +1,12 @@
-Example POST to create orderbook.
+Example PUT to create orderbook.
 
-URL: http://localhost:3000/api/orderbooks
-Method: POST
+URL: http://localhost:3000/api/orderbooks/:id
+Method: PUT
 
-Description: This method POST creates a new orderbook based on the given index example and initial amount for exercise 1
+Description: This method PUT grabs an existing orderbook and creates a new one based on the new index
 
-Body:
+Example Request Body:
 {
-	"fundAmount": 20000000,
 	"index": {
 	  "type": "index_value",
 	  "data":
@@ -29,7 +28,7 @@ Body:
 	          "weight": 0.029205474474645287
 	        },
 	        "BTC": {
-	          "price": 7406.97681309931,
+	          "price": 13000.97681309931,
 	          "weight": 0.28898428690678335
 	        },
 	        "IOTA": {

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
 
+//Orderbook Database Schema
 const orderbookSchema = new mongoose.Schema({
     fundAmount: {
         type: Number,
@@ -196,7 +197,6 @@ async function rebalance(fundAmount, updated_values){
     //Iterate over updated values and create coin pairs with amount equals current price index + order required
     //push to rebalance_coin_pairs
     //Create orderbook object with all the rebalanced coins and new fund amount
-
     for(let updated_value_copy of updated_values_copy ){
         const coin_pair = {
             coin_name: updated_value_copy.symbol,
@@ -210,6 +210,7 @@ async function rebalance(fundAmount, updated_values){
         rebalance_coin_pairs.push(coin_pair);
     }
 
+    //Create Orderbook Object
     const orderbookObject = {
         fundAmount: fundAmount, 
         coin_pairs: rebalance_coin_pairs
