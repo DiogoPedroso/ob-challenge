@@ -1,5 +1,4 @@
 {
 	"name": "Orderbooks",
-	"jwtPrivateKey" : "´MyPrivateKey",
 	"db":"mongodb://localhost/orderbook_hexis"
 }

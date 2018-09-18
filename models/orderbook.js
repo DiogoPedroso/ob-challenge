@@ -1,4 +1,3 @@
-const Joi = require('joi');
 const mongoose = require('mongoose');
 const _ = require('lodash');
 
@@ -59,12 +58,12 @@ async function createOrderbook(json){
         coin_pairs.push(coin_pair);
     };
 
-    const orderbook = {
-        fundAmount: json.fundAmount, 
-        coin_pairs: coin_pairs
-    }
+        const orderbookObject = {
+            fundAmount: json.fundAmount, 
+            coin_pairs: coin_pairs
+        };
 
-    return orderbook;
+        return orderbookObject;
 }
 
 //Function that generates the changes based on a received index
@@ -106,20 +105,20 @@ async function update(orderbook, updated_index){
         if(updated_values[i].order_required < 0) updated_values[i].action = 'SELL'
     }
 
-    await rebalance(fundAmount, updated_values);
-    //return updated values
-    return updated_values;
+    return await rebalance(fundAmount, updated_values);
 }
 
 //Not fully working
 //Function to create coin pairs for rebalancing
 async function rebalance(fundAmount, updated_values){
+    //Array to hold a copy of updated_values
+    let updated_values_copy = updated_values.slice();
     //Array that holds the 
     let rebalance_coin_pairs = [];
     //Array for the coins that need to be bought
-    let buy_array = _.filter(updated_values, ['action', 'BUY']);
+    let buy_array = _.filter(updated_values_copy, ['action', 'BUY']);
     //Array for the coins that can be sold
-    let sell_array = _.filter(updated_values, ['action', 'SELL']);
+    let sell_array = _.filter(updated_values_copy, ['action', 'SELL']);
 
     //Counter for the buy array
     let buy_array_counter = 0;    
@@ -129,7 +128,6 @@ async function rebalance(fundAmount, updated_values){
         while(buy_array_counter < buy_array.length){
             //Calculates the amount that can be sold from the sell coin to the buy coin
             amount = buy_array[buy_array_counter].order_required + sell_coin.order_required;
-            console.log("Amount: " + amount);
             if(amount === 0){
                //create new pair with amount value
                const coin_pair = {
@@ -195,22 +193,29 @@ async function rebalance(fundAmount, updated_values){
         if(buy_array_counter === buy_array.length) break;
     }
 
+    //Iterate over updated values and create coin pairs with amount equals current price index + order required
+    //push to rebalance_coin_pairs
     //Create orderbook object with all the rebalanced coins and new fund amount
+
+    for(let updated_value_copy of updated_values_copy ){
+        const coin_pair = {
+            coin_name: updated_value_copy.symbol,
+            trading_pair: "EUR/" + updated_value_copy.symbol,
+            weight: updated_value_copy.weight,
+            //Amount is the absolute of the total sell order
+            amount: updated_value_copy.current_price + updated_value_copy.order_required,
+            action: "BUY",
+            coin_price: updated_value_copy.price
+        };
+        rebalance_coin_pairs.push(coin_pair);
+    }
+
     const orderbookObject = {
         fundAmount: fundAmount, 
         coin_pairs: rebalance_coin_pairs
     }
 
-    try{
-        //Save to database and return new orderbook
-        const orderbook = await new Orderbook(orderbookObject);
-        await orderbook.save();
-        return;
-    }catch(err){
-        //res.status(400).send(err.errors);
-        console.log(err);
-    }
-    return;
+    return orderbookObject;
 }
 
 module.exports.Orderbook = Orderbook;

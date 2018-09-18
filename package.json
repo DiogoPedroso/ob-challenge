@@ -4,7 +4,7 @@
   "description": "Orderbook Code Challenge By Diogo Pedroso For Hexis",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --watchAll --verbose"
   },
   "keywords": [
     "orderbook",
@@ -23,9 +23,18 @@
     "joi": "^13.6.0",
     "joi-objectid": "^2.0.0",
     "jsonexport": "^2.3.0",
+    "jsonwebtoken": "^8.1.1",
     "lodash": "^4.17.10",
     "mongoose": "^5.2.14",
     "morgan": "^1.9.1",
     "winston": "^2.4.0"
+  },
+  "devDependencies": {
+    "jest": "^22.2.2",
+    "supertest": "^3.0.0"
+  },
+  "jest": {
+    "verbose": true,
+    "testURL": "http://localhost/"
   }
 }

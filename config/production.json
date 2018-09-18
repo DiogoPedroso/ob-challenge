@@ -1,6 +1,0 @@
-{
-	"name": "Orderbooks - Production",
-	"mail": {
-		"host": "prod-mail-server"
-	}
-}

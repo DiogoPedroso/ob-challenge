@@ -1,0 +1,6 @@
+Example DELETE to delete an orderbook.
+
+URL: http://localhost:3000/api/orderbooks/:id
+Method: DELETE
+
+Description: This method DELETEs the orderbook with the given Mongo Object id

@@ -1,0 +1,11 @@
+Example GET to create orderbook.
+
+URL: http://localhost:3000/api/orderbooks
+Method: GET
+
+Description: This GET returns all orderbooks in the Database.
+
+URL: http://localhost:3000/api/orderbooks/:id
+Method: GET
+
+Description: Return orderbook with specific Mongo ID.
